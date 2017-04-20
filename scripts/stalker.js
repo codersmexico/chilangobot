@@ -81,7 +81,6 @@ module.exports = robot => {
       ];
       sql = mysql.format(sql, inserts);
       connection.query(sql);
-      console.log(sql);
     });
   });
 };
