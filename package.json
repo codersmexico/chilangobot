@@ -1,0 +1,17 @@
+{
+  "name": "ChilangoBot",
+  "version": "1.0.0",
+  "private": true,
+  "author": "Erick Ruiz de Chavez <erick@erch.co>",
+  "description": "Tacos. Pozole.",
+  "dependencies": {
+    "hubot": "^2.19.0",
+    "hubot-help": "^0.2.0",
+    "hubot-slack": "^4.3.4",
+    "lodash": "^4.17.4",
+    "mysql": "^2.13.0"
+  },
+  "engines": {
+    "node": "7.x"
+  }
+}
