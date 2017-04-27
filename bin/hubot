@@ -1,8 +1,12 @@
 #!/bin/sh
-set -e
 
 yarn
-export PATH="node_modules/.bin:node_modules/hubot/node_modules/.bin:$PATH"
+
+forever stop "chilangobot"
 
 HUBOT_LOG_LEVEL=error \
-hubot --disable-httpd --adapter slack --name "ChilangoBot" &
+forever start -a --uid "chilangobot" \
+  -c node_modules/hubot/node_modules/.bin/coffee node_modules/.bin/hubot \
+  --disable-httpd \
+  --adapter slack \
+  --name "ChilangoBot"
