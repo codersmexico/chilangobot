@@ -4,12 +4,12 @@ module.exports = {
     ecmaVersion: 6,
     sourceType: 'module',
   },
-  extends: ['eslint:recommended'],
+  extends: [ 'eslint:recommended' ],
   env: {
     node: true,
   },
   rules: {
-    'array-bracket-spacing': ['error', 'always'],
+    'array-bracket-spacing': [ 'error', 'always' ],
     'comma-dangle': [
       'error',
       {
@@ -20,7 +20,7 @@ module.exports = {
         functions: 'never',
       },
     ],
-    indent: ['error', 2],
+    indent: [ 'error', 2 ],
     'max-len': [
       'error',
       {
@@ -42,8 +42,8 @@ module.exports = {
         },
       },
     ],
-    'object-curly-spacing': ['error', 'always'],
-    'object-property-newline': ['error'],
+    'object-curly-spacing': [ 'error', 'always' ],
+    'object-property-newline': [ 'error' ],
     quotes: [
       'error',
       'single',
@@ -52,7 +52,9 @@ module.exports = {
         avoidEscape: true,
       },
     ],
-    semi: ['error', 'always'],
+    semi: [ 'error', 'always' ],
   },
-  globals: {},
+  globals: {
+    Promise: true,
+  },
 };

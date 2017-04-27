@@ -1,8 +1,8 @@
 #!/bin/sh
-
 set -e
 
-npm install
+yarn
 export PATH="node_modules/.bin:node_modules/hubot/node_modules/.bin:$PATH"
 
-exec node_modules/.bin/hubot --adapter slack --name "ChilangoBot" "$@"
+HUBOT_LOG_LEVEL=error \
+hubot --disable-httpd --adapter slack --name "ChilangoBot" &
