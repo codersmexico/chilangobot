@@ -52,7 +52,7 @@ function monitor_channel_joins(robot, channels, config) {
 
       // Skip message if channel monitoring is marked as admins_only and user is neither admin nor owner.
       // Mainly for testing purposes.
-      if (channel.admins_only && (!response.user.is_admin || !response.user.is_owner)) {
+      if (channel.admins_only && !response.user.is_admin && !response.user.is_owner) {
         return;
       }
 
