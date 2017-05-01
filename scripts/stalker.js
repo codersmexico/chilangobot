@@ -1,37 +1,45 @@
+// Description:
+//   Logs every message sent to a room where this bot is present
+//
+// Author:
+//   eruizdechavez
+
 // Libraries.
 const mysql = require('mysql');
 const process = require('process');
 const { get, merge } = require('lodash');
 
 // Import default and per-environment configurations.
-const nodeEnv = get(process, 'env.NODE_ENV');
-const defaultConfig = require('./.stalkerrc');
-const envConfigPath = `./.stalkerrc-${nodeEnv}`;
-let envConfig;
+const node_env = get(process, 'env.NODE_ENV');
+const default_config = require('./.stalkerrc');
+const env_config_path = `./.stalkerrc-${node_env}`;
+let env_config;
 let config;
 
 // Merge configurations into a single one.
 try {
-  envConfig = require(envConfigPath);
+  env_config = require(env_config_path);
 } catch (e) {
-  envConfig = {};
+  env_config = {};
 } finally {
-  config = merge({}, defaultConfig, envConfig);
+  config = merge({}, default_config, env_config);
 }
 
-// Global connection instance, might be a good idea to refactor.
-const connection = mysql.createConnection(get(config, 'mysql'));
-// For some reason, connection resets at 00:00, so reconnect in case of lost connection.
-connection.on('error', function(err) {
-  if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-    connectToDB(connection);
-  } else {
-    throw err;
-  }
-});
+let connection;
 
-// Connect to DB, return a promise
-function connectToDB(connection) {
+function connect_to_db() {
+  connection = mysql.createConnection(get(config, 'mysql'));
+
+  connection.on('error', function(err) {
+    if (!err.fatal) {
+      return;
+    }
+
+    if (err.code !== 'PROTOCOL_CONNECTION_LOST') {
+      throw err;
+    }
+  });
+
   return new Promise((resolve, reject) => {
     connection.connect(err => {
       if (err) {
@@ -44,7 +52,7 @@ function connectToDB(connection) {
 }
 
 // List Slack channels. Might need to reload to get new channels from time to time.
-function getSlackChannels(client) {
+function get_slack_channels(client) {
   return client.web.channels.list().then(res => {
     return get(res, 'channels', []).reduce((hash, channel) => {
       hash[channel.id] = channel.name;
@@ -54,7 +62,7 @@ function getSlackChannels(client) {
 }
 
 module.exports = robot => {
-  const all = [ connectToDB(connection), getSlackChannels(robot.adapter.client) ];
+  const all = [ connect_to_db(), get_slack_channels(robot.adapter.client) ];
 
   Promise.all(all).then(results => {
     const [ , channels ] = results;
