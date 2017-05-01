@@ -1,10 +1,20 @@
-const { invert } = require('lodash');
+const { invert, merge } = require('lodash');
 
-const monitored_channels = {
-  'compra-venta': 'Bienvenidx a #compra-venta.\n\nPor favor, sigue la siguientes reglas:\n\n1. Lo que se comparte es responsabilidad de quien lo comparte y quien lo compra.\n2. Todo lo que se comparta debe seguir nuestro codigo de conducta.\n\nPara mas informacion puedes seguir este link: https://github.com/codersmexico/disclaimer-compra-venta/blob/master/readme.md',
-};
+// Import default and per-environment configurations.
+const node_env = process.env.NODE_ENV;
+const default_config = require('./.dmrc');
+const env_config_path = `./.dmrc-${node_env}`;
+let env_config;
+let config;
 
-const users_white_list = [ 'eruizdechavez', 'mike', 'poguez', 'diegoaguilar', 'digaresc', 'josellau', 'ratacibernetica' ];
+// Merge configurations into a single one.
+try {
+  env_config = require(env_config_path);
+} catch (e) {
+  env_config = {};
+} finally {
+  config = merge({}, default_config, env_config);
+}
 
 function get_slack_channels(robot) {
   return robot.adapter.client.web.channels.list().then(response => {
@@ -17,12 +27,12 @@ function get_slack_channels(robot) {
   });
 }
 
-function monitor_channel_joins(robot, channels, monitored_channels) {
+function monitor_channel_joins(robot, channels, config) {
   robot.adapter.client.on('raw_message', raw_message => {
     const message = JSON.parse(raw_message);
 
     // { name: text, ... } => [ name, name, ... ]
-    const monitored_channel_names = Object.keys(monitored_channels);
+    const monitored_channel_names = Object.keys(config.monitored_channels);
 
     // { id: name, ... } => { name: id, ... }
     const all_channels_with_id_by_name = invert(channels);
@@ -37,13 +47,16 @@ function monitor_channel_joins(robot, channels, monitored_channels) {
 
     // console.log(raw_message);
 
-    // Only send the message if the user is in the white list
     robot.adapter.client.web.users.info(message.user).then(response => {
-      if (users_white_list.indexOf(response.user.name) === -1) {
+      const channel = config.monitored_channels[channels[message.channel]];
+
+      // Skip message if channel monitoring is marked as admins_only and user is neither admin nor owner.
+      // Mainly for testing purposes.
+      if (channel.admins_only && (!response.user.is_admin || !response.user.is_owner)) {
         return;
       }
 
-      send_private_message(robot, message.user, monitored_channels[channels[message.channel]]);
+      send_private_message(robot, message.user, channel.text);
     });
   });
 }
@@ -67,5 +80,5 @@ function send_private_message(robot, user, message) {
 }
 
 module.exports = robot => {
-  get_slack_channels(robot).then(channels => monitor_channel_joins(robot, channels, monitored_channels));
+  get_slack_channels(robot).then(channels => monitor_channel_joins(robot, channels, config));
 };
