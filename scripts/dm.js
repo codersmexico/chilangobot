@@ -1,7 +1,7 @@
 const { invert } = require('lodash');
 
 const monitored_channels = {
-  'compra-venta': 'Hola, bienvenidx a #compra-venta.\n\nPor favor, sigue la siguiente regla: *No hay reglas*.',
+  'compra-venta': 'Bienvenidx a #compra-venta.\n\nPor favor, sigue la siguientes reglas:\n\n1. Lo que se comparte es responsabilidad de quien lo comparte y quien lo compra.\n2. Todo lo que se comparta debe seguir nuestro codigo de conducta.\n\nPara mas informacion puedes seguir este link: https://github.com/codersmexico/disclaimer-compra-venta/blob/master/readme.md',
 };
 
 const users_white_list = [ 'eruizdechavez', 'mike', 'poguez', 'diegoaguilar', 'digaresc', 'josellau', 'ratacibernetica' ];
