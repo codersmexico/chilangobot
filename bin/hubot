@@ -6,7 +6,7 @@ yarn
 
 forever stop "chilangobot"
 
-HUBOT_LOG_LEVEL=error \
+# HUBOT_LOG_LEVEL=error \
 forever start -a --uid "chilangobot" \
   -c node_modules/hubot/node_modules/.bin/coffee node_modules/.bin/hubot \
   --disable-httpd \
