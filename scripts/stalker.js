@@ -27,26 +27,27 @@ try {
 
 let connection;
 
-function connect_to_db() {
-  connection = mysql.createConnection(get(config, 'mysql'));
+function connect_to_db(robot) {
+  return new Promise(resolve => {
+    connection = mysql.createConnection(get(config, 'mysql'));
 
-  connection.on('error', function(err) {
-    if (!err.fatal) {
-      return;
-    }
-
-    if (err.code !== 'PROTOCOL_CONNECTION_LOST') {
-      throw err;
-    }
-  });
-
-  return new Promise((resolve, reject) => {
     connection.connect(err => {
       if (err) {
-        reject(err);
+        robot.logger.warning('MySQL Connection Error, attempting reconnection in 2s');
+        setTimeout(() => connect_to_db(robot), 2000);
       } else {
+        robot.logger.info('MySQL Connection Completed');
         resolve(resolve);
       }
+    });
+
+    connection.on('error', err => {
+      if (err.code !== 'PROTOCOL_CONNECTION_LOST') {
+        throw err;
+      }
+
+      robot.logger.warning('MySQL Connection Error, attempting reconnection in 2s');
+      setTimeout(() => connect_to_db(robot), 2000);
     });
   });
 }
@@ -62,7 +63,7 @@ function get_slack_channels(client) {
 }
 
 module.exports = robot => {
-  const all = [ connect_to_db(), get_slack_channels(robot.adapter.client) ];
+  const all = [ connect_to_db(robot), get_slack_channels(robot.adapter.client) ];
 
   Promise.all(all).then(results => {
     const [ , channels ] = results;
