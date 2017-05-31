@@ -67,7 +67,7 @@ function send_private_message(robot, user, message) {
       // console.log(response);
       const options = {
         as_user: true,
-        unfurl_links: true,
+        unfurl_links: false,
         link_names: true,
       };
 
