@@ -1,3 +1,7 @@
-# Bot para Coders Mexico
+# ChilangoBot
 
-Hecho con [Botkit](https://botkit.ai).
+Made with ❤️ by the Coders Mexico Team 🇲🇽🇺🇸.
+
+For more information, see the [Wiki][wiki].
+
+[wiki]: https://github.com/eruizdechavez/chilangobot/wiki
