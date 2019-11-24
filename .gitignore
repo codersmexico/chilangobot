@@ -1,5 +1,8 @@
+.data
+.vscode
+.env
 node_modules
 .DS_Store*
-.hubot_history
-.stalkerrc-*
-hubot-*
+components/routes/_*
+.sass-cache/*
+to_be_removed
