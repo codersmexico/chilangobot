@@ -13,7 +13,7 @@
     "debug": "2.3.3",
     "express": "4.14.0",
     "express-hbs": "1.0.4",
-    "lodash": "4.17.5",
+    "lodash": "4.17.21",
     "mysql": "2.15.0",
     "node-env-file": "0.1.8",
     "querystring": "0.2.0",
